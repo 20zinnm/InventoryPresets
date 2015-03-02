@@ -10,7 +10,7 @@ commands:
     permission-message: Insufficient Permissions!
   loadpreset:
     description: Use to load an inventory preset.
-    usage: Use /<command> {name} to load a preset by that name.
+    usage: Use /<command> {name} to load a preset by that name. Use without argument for a list of available presets.
     permission: inventorypresets.load
     permission-message: Insufficient Permissions!
   deletepreset:

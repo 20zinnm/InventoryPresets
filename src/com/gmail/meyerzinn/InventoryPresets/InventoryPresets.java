@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -56,6 +55,9 @@ public class InventoryPresets extends JavaPlugin {
 				e.printStackTrace();
 			}
 			getLogger().warning("Created new presets file.");
+			getLogger()
+					.warning(
+							"DO NOT mess with the presets.txt file when the server is active. Please, don't touch it. If you change anything in the file and the plugin becomes unusable, you will receive no support other than simply deleting your presets file and letting it regenerate.");
 		} else {
 			presets = load(f);
 			getLogger().info("Loaded Presets.");
@@ -70,7 +72,9 @@ public class InventoryPresets extends JavaPlugin {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			getLogger().warning("Created new presets file.");
+			getLogger()
+					.warning(
+							"DO NOT mess with the presets.txt file when the server is active. Please, don't touch it. If you change anything in the file and the plugin becomes unusable, you will receive no support other than simply deleting your presets file and letting it regenerate.");
 			save(presets, f.getAbsolutePath());
 			getLogger().info("Saved Presets.");
 		} else {
@@ -78,7 +82,7 @@ public class InventoryPresets extends JavaPlugin {
 			getLogger().info("Saved Presets.");
 		}
 	}
-
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label,
 			String[] args) {
 		if (!(sender instanceof Player)) {
@@ -86,15 +90,22 @@ public class InventoryPresets extends JavaPlugin {
 					+ "Whoops! You can't use that! You need to be a player :P");
 			return true;
 		}
-		if (args.length != 1) {
-			sender.sendMessage("Invalid arguments!");
+		if (args.length > 1) {
+			sender.sendMessage(ChatColor.RED
+					+ "Whoops! This command does not require more than 1 argument.");
 			return true;
 		}
 		Player p = (Player) sender;
 		if (cmd.getLabel().equalsIgnoreCase("savepreset")) {
+			if (args.length != 1) {
+				sender.sendMessage(ChatColor.RED
+						+ "Whoops! Please use like '/savepreset name'. Saving as a name that already exists for you will override it.");
+				return true;
+			}
 			PlayerPreset pp = new PlayerPreset();
 			pp.invItems = p.getInventory().getContents();
 			pp.invArmour = p.getInventory().getArmorContents();
+			pp.name = args[0];
 			HashMap<String, PlayerPreset> CurrentPresets = presets.get((p
 					.getUniqueId().toString()));
 			if (CurrentPresets != null) {
@@ -104,7 +115,7 @@ public class InventoryPresets extends JavaPlugin {
 				p.sendMessage(ChatColor.BLUE + "Saved preset " + args[0]);
 				return true;
 			} else {
-				HashMap CurrentPresets2 = new HashMap<String, PlayerPreset>();
+				HashMap<String, PlayerPreset> CurrentPresets2 = new HashMap<String, PlayerPreset>();
 				CurrentPresets2.put(args[0], pp);
 				presets.put(p.getUniqueId().toString(), CurrentPresets2);
 				p.sendMessage(ChatColor.BLUE + "Saved preset " + args[0]);
@@ -116,7 +127,17 @@ public class InventoryPresets extends JavaPlugin {
 				p.sendMessage(ChatColor.RED + "You have no saved presets!");
 				return true;
 			}
-			HashMap CurrentPresets = presets.get(p.getUniqueId().toString());
+			HashMap<String, PlayerPreset> CurrentPresets = presets.get(p.getUniqueId()
+					.toString());
+			if (args.length != 1) {
+				String list = "Presets:";
+				sender.sendMessage("Which would you like to load? /loadpreset [name]");
+				for (PlayerPreset i : CurrentPresets.values()) {
+					list = list + " " + i;
+				}
+				p.sendMessage(list);
+				return true;
+			}
 			if (!CurrentPresets.containsKey(args[0])) {
 				p.sendMessage(ChatColor.RED
 						+ "There are no presets saved to you by that name!");
@@ -133,7 +154,8 @@ public class InventoryPresets extends JavaPlugin {
 				p.sendMessage(ChatColor.RED + "You have no saved presets!");
 				return true;
 			}
-			HashMap CurrentPresets = presets.get(p.getUniqueId().toString());
+			HashMap<String, PlayerPreset> CurrentPresets = presets.get(p
+					.getUniqueId().toString());
 			if (!CurrentPresets.containsKey(args[0])) {
 				p.sendMessage(ChatColor.RED
 						+ "There are no presets saved to you by that name!");

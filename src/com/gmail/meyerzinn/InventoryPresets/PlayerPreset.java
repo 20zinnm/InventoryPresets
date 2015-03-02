@@ -6,6 +6,7 @@ public class PlayerPreset {
 	
 	public ItemStack[] invItems;
 	public ItemStack[] invArmour;
+	public String name;
 
 	public PlayerPreset() {
 		
