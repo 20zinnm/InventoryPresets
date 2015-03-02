@@ -48,7 +48,7 @@ public class InventoryPresets extends JavaPlugin {
 	}
 
 	public void onEnable() {
-		File f = new File(getDataFolder() + "presets.txt");
+		File f = new File(getDataFolder() + File.separator + "presets.txt");
 		if (!f.exists()) {
 			try {
 				f.createNewFile();
@@ -63,7 +63,7 @@ public class InventoryPresets extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		File f = new File(getDataFolder() + "presets.txt");
+		File f = new File(getDataFolder() + File.separator + "presets.txt");
 		if (!f.exists()) {
 			try {
 				f.createNewFile();
@@ -95,12 +95,21 @@ public class InventoryPresets extends JavaPlugin {
 			PlayerPreset pp = new PlayerPreset();
 			pp.invItems = p.getInventory().getContents();
 			pp.invArmour = p.getInventory().getArmorContents();
-			HashMap<String, PlayerPreset> CurrentPresets = presets.get((p.getUniqueId().toString()));
-			CurrentPresets.put(args[0], pp);
-			presets.remove(p.getUniqueId().toString());
-			presets.put(p.getUniqueId().toString(), CurrentPresets);
-			p.sendMessage(ChatColor.BLUE + "Saved preset " + args[0]);
-			return true;
+			HashMap<String, PlayerPreset> CurrentPresets = presets.get((p
+					.getUniqueId().toString()));
+			if (CurrentPresets != null) {
+				CurrentPresets.put(args[0], pp);
+				presets.remove(p.getUniqueId().toString());
+				presets.put(p.getUniqueId().toString(), CurrentPresets);
+				p.sendMessage(ChatColor.BLUE + "Saved preset " + args[0]);
+				return true;
+			} else {
+				HashMap CurrentPresets2 = new HashMap<String, PlayerPreset>();
+				CurrentPresets2.put(args[0], pp);
+				presets.put(p.getUniqueId().toString(), CurrentPresets2);
+				p.sendMessage(ChatColor.BLUE + "Saved preset " + args[0]);
+				return true;
+			}
 		}
 		if (cmd.getLabel().equalsIgnoreCase("loadpreset")) {
 			if (!presets.containsKey(p.getUniqueId().toString())) {
