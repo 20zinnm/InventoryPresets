@@ -1,7 +1,7 @@
 name: InventoryPresets
 author: AniSkywalker
 version: 0.1
-main: com.google.meyerzinn.InventoryPresets.InventoryPresets
+main: com.gmail.meyerzinn.InventoryPresets.InventoryPresets
 commands:
   savepreset:
     description: Use to save an inventory preset.
