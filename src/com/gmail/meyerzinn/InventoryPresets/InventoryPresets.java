@@ -95,7 +95,7 @@ public class InventoryPresets extends JavaPlugin {
 			PlayerPreset pp = new PlayerPreset();
 			pp.invItems = p.getInventory().getContents();
 			pp.invArmour = p.getInventory().getArmorContents();
-			HashMap CurrentPresets = presets.get((p.getUniqueId().toString()));
+			HashMap<String, PlayerPreset> CurrentPresets = presets.get((p.getUniqueId().toString()));
 			CurrentPresets.put(args[0], pp);
 			presets.remove(p.getUniqueId().toString());
 			presets.put(p.getUniqueId().toString(), CurrentPresets);
