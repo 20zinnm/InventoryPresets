@@ -1,0 +1,20 @@
+name: InventoryPresets
+author: AniSkywalker
+version: 0.1
+main: com.google.meyerzinn.InventoryPresets.InventoryPresets
+commands:
+  savepreset:
+    description: Use to save an inventory preset.
+    usage: Use /<command> {name} to save a preset by that name.
+    permission: inventorypresets.save
+    permission-message: Insufficient Permissions!
+  loadpreset:
+    description: Use to load an inventory preset.
+    usage: Use /<command> {name} to load a preset by that name.
+    permission: inventorypresets.load
+    permission-message: Insufficient Permissions!
+  deletepreset:
+    description: Use to delete an inventory preset.
+    usage: Use /<command> {name} to delete a preset by that name.
+    permission: inventorypresets.delete
+    permission-message: Insufficient Permissions!

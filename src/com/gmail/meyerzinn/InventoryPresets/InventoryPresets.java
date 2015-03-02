@@ -3,6 +3,7 @@ package com.gmail.meyerzinn.InventoryPresets;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -33,7 +34,8 @@ public class InventoryPresets extends JavaPlugin {
 		return null;
 	}
 
-	public static void save(HashMap<String, HashMap<String, PlayerPreset>> map, String path) {
+	public static void save(HashMap<String, HashMap<String, PlayerPreset>> map,
+			String path) {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(
 					new FileOutputStream(path));
@@ -46,11 +48,35 @@ public class InventoryPresets extends JavaPlugin {
 	}
 
 	public void onEnable() {
-
+		File f = new File(getDataFolder() + "presets.txt");
+		if (!f.exists()) {
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			getLogger().warning("Created new presets file.");
+		} else {
+			presets = load(f);
+			getLogger().info("Loaded Presets.");
+		}
 	}
 
 	public void onDisable() {
-
+		File f = new File(getDataFolder() + "presets.txt");
+		if (!f.exists()) {
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			getLogger().warning("Created new presets file.");
+			save(presets, f.getAbsolutePath());
+			getLogger().info("Saved Presets.");
+		} else {
+			save(presets, f.getAbsolutePath());
+			getLogger().info("Saved Presets.");
+		}
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label,
