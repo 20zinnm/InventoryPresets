@@ -25,7 +25,7 @@ public class InventoryPresetsListeners implements Listener {
 							+ "Presets" + ChatColor.GRAY + "]");
 					e.setLine(1, ChatColor.RED + "" + ChatColor.BOLD
 							+ "Save Preset");
-					e.setLine(2, ChatColor.GREEN + "Richt Click to");
+					e.setLine(2, ChatColor.GREEN + "Richt Click -");
 					e.setLine(3, ChatColor.GREEN + "save a preset.");
 					return;
 				}
@@ -34,7 +34,7 @@ public class InventoryPresetsListeners implements Listener {
 							+ "Presets" + ChatColor.GRAY + "]");
 					e.setLine(1, ChatColor.RED + "" + ChatColor.BOLD
 							+ "Load Preset");
-					e.setLine(2, ChatColor.GREEN + "Right Click to");
+					e.setLine(2, ChatColor.GREEN + "Right Click -");
 					e.setLine(3, ChatColor.GREEN + "load a preset.");
 					return;
 				}
@@ -43,7 +43,7 @@ public class InventoryPresetsListeners implements Listener {
 							+ "Presets" + ChatColor.GRAY + "]");
 					e.setLine(1, ChatColor.RED + "" + ChatColor.BOLD
 							+ "Delete Preset");
-					e.setLine(2, ChatColor.GREEN + "Right Click to");
+					e.setLine(2, ChatColor.GREEN + "Right Click -");
 					e.setLine(3, ChatColor.GREEN + "delete a preset.");
 					return;
 				}
