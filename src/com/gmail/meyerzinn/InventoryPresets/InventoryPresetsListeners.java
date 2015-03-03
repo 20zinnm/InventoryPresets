@@ -135,6 +135,9 @@ public class InventoryPresetsListeners implements Listener {
 				.toString())) {
 			Player p = e.getPlayer();
 			String name = e.getMessage();
+			if (name == "cancel") {
+				InventoryPresets.promped.remove(p.getUniqueId().toString());
+			}
 			if (InventoryPresets.promped.get(p.getUniqueId().toString()) == "save") {
 				PlayerPreset pp = new PlayerPreset();
 				pp.invItems = p.getInventory().getContents();
