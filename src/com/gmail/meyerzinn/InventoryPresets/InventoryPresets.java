@@ -18,7 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class InventoryPresets extends JavaPlugin {
 
 	public static HashMap<String, HashMap<String, PlayerPreset>> presets = new HashMap<String, HashMap<String, PlayerPreset>>();
-
+	public static HashMap<String, String> promped = new HashMap<String, String>();
+	
 	@SuppressWarnings("unchecked")
 	public static HashMap<String, HashMap<String, PlayerPreset>> load(File f) {
 		try {
@@ -47,7 +48,17 @@ public class InventoryPresets extends JavaPlugin {
 	}
 
 	public void onEnable() {
-		File f = new File(getDataFolder() + File.separator + "presets.txt");
+		try {
+	        Metrics metrics = new Metrics(this);
+	        metrics.start();
+	    } catch (IOException e) {
+	    }
+		File dataFolder = getDataFolder();
+        if(!dataFolder.exists())
+        {
+            dataFolder.mkdir();
+        }
+		File f = new File(getDataFolder(), "presets.txt");
 		if (!f.exists()) {
 			try {
 				f.createNewFile();
@@ -62,10 +73,16 @@ public class InventoryPresets extends JavaPlugin {
 			presets = load(f);
 			getLogger().info("Loaded Presets.");
 		}
+		getServer().getPluginManager().registerEvents(new InventoryPresetsListeners(), this);
 	}
 
 	public void onDisable() {
-		File f = new File(getDataFolder() + File.separator + "presets.txt");
+		File dataFolder = getDataFolder();
+        if(!dataFolder.exists())
+        {
+            dataFolder.mkdir();
+        }
+		File f = new File(getDataFolder(), "presets.txt");
 		if (!f.exists()) {
 			try {
 				f.createNewFile();
@@ -75,10 +92,10 @@ public class InventoryPresets extends JavaPlugin {
 			getLogger()
 					.warning(
 							"DO NOT mess with the presets.txt file when the server is active. Please, don't touch it. If you change anything in the file and the plugin becomes unusable, you will receive no support other than simply deleting your presets file and letting it regenerate.");
-			save(presets, f.getAbsolutePath());
+			save(presets, f.getPath());
 			getLogger().info("Saved Presets.");
 		} else {
-			save(presets, f.getAbsolutePath());
+			save(presets, f.getPath());
 			getLogger().info("Saved Presets.");
 		}
 	}
@@ -133,9 +150,10 @@ public class InventoryPresets extends JavaPlugin {
 				String list = "Presets:";
 				sender.sendMessage("Which would you like to load? /loadpreset [name]");
 				for (PlayerPreset i : CurrentPresets.values()) {
-					list = list + " " + i;
+					list = list + " " + i.name + ",";
 				}
-				p.sendMessage(list);
+				list.replace(" ", ", ");
+				p.sendMessage(ChatColor.BLUE + "Presets: " + list);
 				return true;
 			}
 			if (!CurrentPresets.containsKey(args[0])) {
