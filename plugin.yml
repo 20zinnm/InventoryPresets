@@ -1,6 +1,6 @@
 name: InventoryPresets
 author: AniSkywalker
-version: 0.2
+version: 1.0
 main: com.gmail.meyerzinn.InventoryPresets.InventoryPresets
 commands:
   savepreset:

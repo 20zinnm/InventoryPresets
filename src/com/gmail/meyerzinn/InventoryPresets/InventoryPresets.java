@@ -48,6 +48,11 @@ public class InventoryPresets extends JavaPlugin {
 	}
 
 	public void onEnable() {
+		saveDefaultConfig();
+		if (getConfig().getBoolean("auto-update")) {
+			@SuppressWarnings("unused")
+			Updater updater = new Updater(this, 90032, this.getFile(), Updater.UpdateType.DEFAULT, false);
+		}
 		try {
 	        Metrics metrics = new Metrics(this);
 	        metrics.start();
