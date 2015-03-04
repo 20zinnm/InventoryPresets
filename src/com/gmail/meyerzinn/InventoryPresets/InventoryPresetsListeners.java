@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -94,7 +96,7 @@ public class InventoryPresetsListeners implements Listener {
 						p.sendMessage(ChatColor.BLUE
 								+ "Which would you like to load? (Say it in chat.)");
 						for (PlayerPreset i : CurrentPresets.values()) {
-							list = list + " " + i.name;
+							list = list + " " + i.getName();
 						}
 						list.replace(" ", ", ");
 						p.sendMessage(ChatColor.BLUE + "Presets: " + list);
@@ -117,7 +119,7 @@ public class InventoryPresetsListeners implements Listener {
 						p.sendMessage(ChatColor.BLUE
 								+ "Which would you like to delete? (Say it in chat.)");
 						for (PlayerPreset i : CurrentPresets.values()) {
-							list = list + " " + i.name;
+							list = list + " " + i.getName();
 						}
 						list.replace(" ", ", ");
 						p.sendMessage(ChatColor.BLUE + "Presets: " + list);
@@ -135,14 +137,18 @@ public class InventoryPresetsListeners implements Listener {
 				.toString())) {
 			Player p = e.getPlayer();
 			String name = e.getMessage();
-			if (name == "cancel") {
+			if (e.getMessage().equalsIgnoreCase("cancel")) {
 				InventoryPresets.promped.remove(p.getUniqueId().toString());
+				p.sendMessage(ChatColor.RED + "Canceled!");
+				e.setCancelled(true);
+				return;
 			}
+			e.setCancelled(true);
 			if (InventoryPresets.promped.get(p.getUniqueId().toString()) == "save") {
 				PlayerPreset pp = new PlayerPreset();
-				pp.invItems = p.getInventory().getContents();
-				pp.invArmour = p.getInventory().getArmorContents();
-				pp.name = name;
+				pp.setInvItems(p.getInventory().getContents());
+				pp.setInvArmour(p.getInventory().getArmorContents());
+				pp.setName(name);
 				HashMap<String, PlayerPreset> CurrentPresets = InventoryPresets.presets
 						.get((p.getUniqueId().toString()));
 				if (CurrentPresets != null) {
@@ -170,6 +176,7 @@ public class InventoryPresetsListeners implements Listener {
 				if (!InventoryPresets.presets.containsKey(p.getUniqueId()
 						.toString())) {
 					p.sendMessage(ChatColor.RED + "You have no saved presets!");
+					e.setCancelled(true);
 					return;
 				}
 				HashMap<String, PlayerPreset> CurrentPresets = InventoryPresets.presets
@@ -177,12 +184,13 @@ public class InventoryPresetsListeners implements Listener {
 				if (!CurrentPresets.containsKey(name)) {
 					p.sendMessage(ChatColor.RED
 							+ "There are no presets saved to you by that name!");
+					e.setCancelled(true);
 					return;
 				}
 				PlayerPreset preset = (PlayerPreset) CurrentPresets.get(name);
-				p.getInventory().setContents((ItemStack[]) preset.invItems);
+				p.getInventory().setContents((ItemStack[]) preset.getInvItems());
 				p.getInventory().setArmorContents(
-						(ItemStack[]) preset.invArmour);
+						(ItemStack[]) preset.getInvArmour());
 				p.sendMessage(ChatColor.BLUE + "Equipped preset! Enjoy.");
 				InventoryPresets.promped.remove(p.getUniqueId().toString());
 				e.setCancelled(true);
@@ -192,6 +200,7 @@ public class InventoryPresetsListeners implements Listener {
 				if (!InventoryPresets.presets.containsKey(p.getUniqueId()
 						.toString())) {
 					p.sendMessage(ChatColor.RED + "You have no saved presets!");
+					e.setCancelled(true);
 					return;
 				}
 				HashMap<String, PlayerPreset> CurrentPresets = InventoryPresets.presets
@@ -199,6 +208,7 @@ public class InventoryPresetsListeners implements Listener {
 				if (!CurrentPresets.containsKey(name)) {
 					p.sendMessage(ChatColor.RED
 							+ "There are no presets saved to you by that name!");
+					e.setCancelled(true);
 					return;
 				}
 				CurrentPresets.remove(name);
@@ -214,4 +224,93 @@ public class InventoryPresetsListeners implements Listener {
 		}
 	}
 
+	public boolean onCommand(CommandSender sender, Command cmd, String label,
+			String[] args) {
+		if (!(sender instanceof Player)) {
+			sender.sendMessage(ChatColor.RED
+					+ "Whoops! You can't use that! You need to be a player :P");
+			return true;
+		}
+		if (args.length > 1) {
+			sender.sendMessage(ChatColor.RED
+					+ "Whoops! This command does not require more than 1 argument.");
+			return true;
+		}
+		Player p = (Player) sender;
+		if (cmd.getLabel().equalsIgnoreCase("savepreset")) {
+			if (args.length != 1) {
+				sender.sendMessage(ChatColor.RED
+						+ "Whoops! Please use like '/savepreset name'. Saving as a name that already exists for you will override it.");
+				return true;
+			}
+			PlayerPreset pp = new PlayerPreset();
+			pp.setInvItems(p.getInventory().getContents());
+			pp.setInvArmour(p.getInventory().getArmorContents());
+			pp.setName(args[0]);
+			HashMap<String, PlayerPreset> CurrentPresets = InventoryPresets.presets.get((p
+					.getUniqueId().toString()));
+			if (CurrentPresets != null) {
+				CurrentPresets.put(args[0], pp);
+				InventoryPresets.presets.remove(p.getUniqueId().toString());
+				InventoryPresets.presets.put(p.getUniqueId().toString(), CurrentPresets);
+				p.sendMessage(ChatColor.BLUE + "Saved preset " + args[0]);
+				return true;
+			} else {
+				HashMap<String, PlayerPreset> CurrentPresets2 = new HashMap<String, PlayerPreset>();
+				CurrentPresets2.put(args[0], pp);
+				InventoryPresets.presets.put(p.getUniqueId().toString(), CurrentPresets2);
+				p.sendMessage(ChatColor.BLUE + "Saved preset " + args[0]);
+				return true;
+			}
+		}
+		if (cmd.getLabel().equalsIgnoreCase("loadpreset")) {
+			if (!InventoryPresets.presets.containsKey(p.getUniqueId().toString())) {
+				p.sendMessage(ChatColor.RED + "You have no saved presets!");
+				return true;
+			}
+			HashMap<String, PlayerPreset> CurrentPresets = InventoryPresets.presets.get(p
+					.getUniqueId().toString());
+			if (args.length != 1) {
+				String list = "Presets:";
+				sender.sendMessage("Which would you like to load? /loadpreset [name]");
+				for (PlayerPreset i : CurrentPresets.values()) {
+					list = list + " " + i.getName() + ",";
+				}
+				list.replace(" ", ", ");
+				p.sendMessage(ChatColor.BLUE + "Presets: " + list);
+				return true;
+			}
+			if (!CurrentPresets.containsKey(args[0])) {
+				p.sendMessage(ChatColor.RED
+						+ "There are no presets saved to you by that name!");
+				return true;
+			}
+			PlayerPreset preset = (PlayerPreset) CurrentPresets.get(args[0]);
+			p.getInventory().setContents((ItemStack[]) preset.getInvItems());
+			p.getInventory().setArmorContents(
+					(ItemStack[]) preset.getInvArmour());
+			p.sendMessage(ChatColor.BLUE + "Equipped preset! Enjoy.");
+			return true;
+		}
+		if (cmd.getLabel().equalsIgnoreCase("deletepreset")) {
+			if (!InventoryPresets.presets.containsKey(p.getUniqueId().toString())) {
+				p.sendMessage(ChatColor.RED + "You have no saved presets!");
+				return true;
+			}
+			HashMap<String, PlayerPreset> CurrentPresets = InventoryPresets.presets.get(p
+					.getUniqueId().toString());
+			if (!CurrentPresets.containsKey(args[0])) {
+				p.sendMessage(ChatColor.RED
+						+ "There are no presets saved to you by that name!");
+				return true;
+			}
+			CurrentPresets.remove(args[0]);
+			InventoryPresets.presets.remove(p.getUniqueId().toString());
+			InventoryPresets.presets.put(p.getUniqueId().toString(), CurrentPresets);
+			return true;
+		}
+		return false;
+
+	}
+	
 }
