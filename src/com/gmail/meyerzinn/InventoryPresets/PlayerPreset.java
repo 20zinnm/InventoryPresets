@@ -1,3 +1,12 @@
+/*******************************************************
+ * Copyright (C) 2015 Meyer Zinn meyerzinn@gmail.com
+ * 
+ * This file is part of InventoryPresets.
+ * 
+ * InventoryPresets can not be copied and/or distributed
+ * without the express permission of Meyer Zinn.
+ *******************************************************/
+
 package com.gmail.meyerzinn.InventoryPresets;
 
 import java.util.HashMap;

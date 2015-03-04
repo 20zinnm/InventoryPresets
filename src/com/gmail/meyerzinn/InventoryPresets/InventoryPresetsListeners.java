@@ -1,3 +1,11 @@
+/*******************************************************
+ * Copyright (C) 2015 Meyer Zinn meyerzinn@gmail.com
+ * 
+ * This file is part of InventoryPresets.
+ * 
+ * InventoryPresets can not be copied and/or distributed
+ * without the express permission of Meyer Zinn.
+ *******************************************************/
 package com.gmail.meyerzinn.InventoryPresets;
 
 import java.util.HashMap;
@@ -26,7 +34,7 @@ public class InventoryPresetsListeners implements Listener {
 					e.setLine(0, ChatColor.GRAY + "[" + ChatColor.DARK_AQUA
 							+ "Presets" + ChatColor.GRAY + "]");
 					e.setLine(1, ChatColor.RED + "" + ChatColor.BOLD
-							+ "Save Preset");
+							+ "Save");
 					e.setLine(2, ChatColor.GREEN + "Richt Click -");
 					e.setLine(3, ChatColor.GREEN + "save a preset.");
 					return;
@@ -35,7 +43,7 @@ public class InventoryPresetsListeners implements Listener {
 					e.setLine(0, ChatColor.GRAY + "[" + ChatColor.DARK_AQUA
 							+ "Presets" + ChatColor.GRAY + "]");
 					e.setLine(1, ChatColor.RED + "" + ChatColor.BOLD
-							+ "Load Preset");
+							+ "Load");
 					e.setLine(2, ChatColor.GREEN + "Right Click -");
 					e.setLine(3, ChatColor.GREEN + "load a preset.");
 					return;
@@ -44,7 +52,7 @@ public class InventoryPresetsListeners implements Listener {
 					e.setLine(0, ChatColor.GRAY + "[" + ChatColor.DARK_AQUA
 							+ "Presets" + ChatColor.GRAY + "]");
 					e.setLine(1, ChatColor.RED + "" + ChatColor.BOLD
-							+ "Delete Preset");
+							+ "Delete");
 					e.setLine(2, ChatColor.GREEN + "Right Click -");
 					e.setLine(3, ChatColor.GREEN + "delete a preset.");
 					return;
@@ -71,7 +79,7 @@ public class InventoryPresetsListeners implements Listener {
 					if (sign.getLine(1)
 							.equalsIgnoreCase(
 									ChatColor.RED + "" + ChatColor.BOLD
-											+ "Save Preset")) {
+											+ "Save")) {
 						InventoryPresets.promped.put(
 								p.getUniqueId().toString(), "save");
 						p.sendMessage(ChatColor.BLUE
@@ -81,7 +89,7 @@ public class InventoryPresetsListeners implements Listener {
 					if (sign.getLine(1)
 							.equalsIgnoreCase(
 									ChatColor.RED + "" + ChatColor.BOLD
-											+ "Load Preset")) {
+											+ "Load")) {
 						if (!InventoryPresets.presets.containsKey(p
 								.getUniqueId().toString())) {
 							p.sendMessage(ChatColor.RED
@@ -104,7 +112,7 @@ public class InventoryPresetsListeners implements Listener {
 					}
 					if (sign.getLine(1).equalsIgnoreCase(
 							ChatColor.RED + "" + ChatColor.BOLD
-									+ "Delete Preset")) {
+									+ "Delete")) {
 						if (!InventoryPresets.presets.containsKey(p
 								.getUniqueId().toString())) {
 							p.sendMessage(ChatColor.RED
